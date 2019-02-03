@@ -7,11 +7,11 @@ const NODE_ENV = process.env.NODE_ENV;
 const config = {
 	mode: NODE_ENV,
 	target: 'node',
-	entry: ['./server.js'],
+	entry: ['./server/startup/index.js'],
 	output: {
-		path: path.join(__dirname, './build'),
+		path: path.join(__dirname, '../build/server'),
 		// Build it as a commonjs library so we can include it
-		filename: 'server.js',
+		filename: 'index.js',
 		// Build it as a commonjs library so we can include it
 		libraryTarget: 'commonjs',
 	},
@@ -34,6 +34,21 @@ const config = {
 				use: [
 					{
 						loader: require.resolve('babel-loader'),
+						options: {
+							babelrc: false,
+							compact: false,
+							presets: [
+								'babel-preset-react-app',
+								'@babel/preset-env',
+							],
+							plugins: [
+								'@babel/plugin-syntax-dynamic-import',
+								'dynamic-import-node',
+								'babel-plugin-transform-class-properties',
+							],
+							cacheDirectory: true,
+							highlightCode: true,
+						},
 					},
 				],
 			},
