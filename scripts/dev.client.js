@@ -12,6 +12,11 @@ const paths = require('../config/paths');
 
 const compiler = webpack(config);
 
+fs.copySync(paths.appPublic, paths.appBuild, {
+	dereference: true,
+	filter: file => file !== paths.appHtml,
+});
+
 fs.emptyDirSync(paths.appBuild);
 
 console.log('Development: Applying webpackDevMiddleware');

@@ -6,12 +6,12 @@ import TestPage from './pages/TestPage';
 
 
 const App = () => (
-    <Layout>
-      <Switch>
-        <Route exact path='/' component={ HomePage } />
-        <Route exact path='/test' component={ TestPage} />
-      </Switch>
-    </Layout>
+	<Layout>
+		<Switch>
+			<Route exact path='/' component={ HomePage } />
+			<Route exact path='/test' component={ TestPage} />
+		</Switch>
+	</Layout>
 );
 
 export default App;

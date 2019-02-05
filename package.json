@@ -15,6 +15,7 @@
     "apollo-link": "^1.2.8",
     "apollo-link-error": "^1.1.7",
     "apollo-link-http": "^1.5.4",
+    "apollo-link-state": "^0.4.2",
     "apollo-server-express": "^2.3.3",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "9.0.0",
@@ -92,8 +93,8 @@
   },
   "scripts": {
     "start": "cross-env NODE_ENV=production node build/server/index.js",
-    "dv": "cross-env NODE_ENV=development node scripts/dev.client.js",
-    "dev": "node scripts/dev-start.js && npm run dev:server",
+    "dev:react": "cross-env NODE_ENV=development node scripts/dev.client.js",
+    "dev:node": "node scripts/dev-start.js && npm run dev:server",
     "dev:server": "cross-env NODE_ENV=development node scripts/dev.server.js",
     "build:node": "node scripts/build-node.js",
     "build": "npm run build:react && npm run build:node",

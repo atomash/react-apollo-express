@@ -11,18 +11,11 @@ const fs = require('fs-extra');
 
 console.log(`${chalk.magenta('\n[INFO]')} Compiling node server`);
 
-function copyPublicFolder() {
-	fs.copySync(paths.appPublic, paths.appBuild, {
-		dereference: true,
-		filter: file => file !== paths.appHtml,
-	});
-}
+
 
 async function init() {
 	try {
-		await copyPublicFolder();
 		await fs.emptyDirSync(paths.appBuildServer);
-		await fs.copySync(paths.serverAssets, paths.appBuildServer);
 		await fs.ensureDirSync(paths.appBuild);
 		if (!fs.existsSync(`${paths.appBuild}/asset-manifest.json`)) {
 			await fs.writeJson(`${paths.appBuild}/asset-manifest.json`, {});
