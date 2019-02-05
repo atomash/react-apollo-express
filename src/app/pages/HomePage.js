@@ -39,11 +39,11 @@ export default function HomePage() {
 											mutation={DELETE_USER}
 											variables={{ id: user._id }}
 											update={(cache) => {
-												const { allUsers } = cache.readQuery({ query: GET_USERS });
 												cache.writeQuery({
 													query: GET_USERS,
 													data: {
-														allUsers: allUsers.filter(foundUser => foundUser._id !== user._id)
+														...data,
+														allUsers: data.allUsers.filter(foundUser => foundUser._id !== user._id),
 													},
 												});
 											}}
