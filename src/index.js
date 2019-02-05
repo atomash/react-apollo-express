@@ -15,30 +15,13 @@ import './index.css';
 
 
 import { resolvers, defaults } from './resolvers';
+import typeDefs from './schemas'
 
 import App from './app/App';
 
 
 const isDev = process.env.NODE_ENV === 'development';
 const root = document.getElementById('root');
-
-const typeDefs = `
-  type Todo {
-    id: Int!
-    text: String!
-    completed: Boolean!
-  }
-
-  type Mutation {
-    addTodo(text: String!): Todo
-    toggleTodo(id: Int!): Todo
-  }
-
-  type Query {
-    visibilityFilter: String
-    todos: [Todo]
-  }
-`;
 
 const cache = new InMemoryCache().restore(window.__APOLLO_STATE__);
 const stateLink = withClientState({ resolvers, defaults, cache, typeDefs })

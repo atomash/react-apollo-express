@@ -12,8 +12,7 @@ userController.addUser = (root, args) => {
 	return user.save();
 };
 
-userController.deleteUser = (root, args) =>
-	User.deleteOne({ _id: args.id });
+userController.deleteUser = (root, args) => User.deleteOne({ _id: args.id })
 
 
 userController.updateUser = (root, args) => {
