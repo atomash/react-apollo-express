@@ -47,25 +47,21 @@ export default async (req, res, next) => {
         return string;
       }, '');
   };
-  console.log(assets)
     return res.send(`
       <!DOCTYPE html>
       <html>
         <head>
           <meta charset="utf-8">
           <title>Apollo</title>
-          <link rel="stylesheet" href="/static/css/main.chunk.css">
+          <link rel="stylesheet" href=${assets['main.css']}>
         </head>
         <body>
           <script>
             window.__APOLLO_STATE__ = ${JSON.stringify(initialState, null, 2).replace(/</g, '\\u003c')};
           </script>
           <div id="root">${html}</div>
-          <script type="text/javascript" src=/static/js/main.chunk.js></script>
-          <script type="text/javascript" src=/static/js/0.chunk.js></script>
-          <script type="text/javascript" src=/static/js/bundle.js></script>
+          ${jsScripts(assets)}
         </body>
       </html>
     `);
 }
-// ${jsScripts(assets)}

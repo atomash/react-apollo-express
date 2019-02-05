@@ -2,6 +2,7 @@ process.env.NODE_ENV = 'development';
 
 const webpack = require('webpack');
 const config = require('../config/webpack.config.node');
+
 const compiler = webpack(config);
 const chalk = require('chalk');
 
@@ -19,12 +20,13 @@ function copyPublicFolder() {
 
 async function init() {
 	try {
-		await fs.emptyDirSync(paths.appBuild);
 		await copyPublicFolder();
 		await fs.emptyDirSync(paths.appBuildServer);
 		await fs.copySync(paths.serverAssets, paths.appBuildServer);
 		await fs.ensureDirSync(paths.appBuild);
-		await fs.writeJson(`${paths.appBuild}/asset-manifest.json`, {});
+		if (!fs.existsSync(`${paths.appBuild}/asset-manifest.json`)) {
+			await fs.writeJson(`${paths.appBuild}/asset-manifest.json`, {});
+		}
 		compiler.run((err, stats) => {
 			if (err) {
 				console.error(err.stack || err);

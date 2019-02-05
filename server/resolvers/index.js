@@ -1,8 +1,6 @@
+import helloResolver from "./hello";
+import userResolver from "./user";
 
-const resolvers = {
-	Query: {
-	  hello: () => 'Hello world!',
-	},
-};
-  
+const resolvers = [userResolver, helloResolver];
+
 export default resolvers;

@@ -1,9 +1,6 @@
-import { gql } from 'apollo-server-express';
+import helloSchema from "./hello";
+import userSchema from "./user";
 
-const typeDefs = gql`
-  type Query {
-    hello: String
-  }
-`;
+const schemas = [userSchema, helloSchema];
 
-export default typeDefs
+export default schemas;
