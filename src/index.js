@@ -27,6 +27,7 @@ const cache = new InMemoryCache().restore(window.__APOLLO_STATE__);
 const stateLink = withClientState({ resolvers, defaults, cache, typeDefs })
 
 const client = new ApolloClient({
+	
 	connectToDevTools: isDev,
 	cache,
 	link: ApolloLink.from([

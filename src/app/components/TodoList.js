@@ -30,13 +30,19 @@ const getVisibleTodos = (todos, filter) => {
 
 const TodoList = () => (
 	<Query query={GET_TODOS}>
-		{({ data: { todos, visibilityFilter } }) => (
-			<ul>
-				{getVisibleTodos(todos, visibilityFilter).map(todo => (
-					<Todo key={todo.id} {...todo} />
-				))}
-			</ul>
-		)}
+		{({ loading, error, data: { todos, visibilityFilter } }) => {
+			if (loading) return <p>Loading...</p>;
+			if (error) return <p>Error :(</p>;
+			return (
+				<div>
+					<ul>
+						{getVisibleTodos(todos, visibilityFilter).map(todo => (
+							<Todo key={todo.id} {...todo} />
+						))}
+					</ul>
+				</div>
+			)
+		}}
 	</Query>
 );
 
