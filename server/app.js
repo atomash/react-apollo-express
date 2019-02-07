@@ -47,7 +47,6 @@ Apollo.installSubscriptionHandlers(server)
 
 
 export {
-	app,
 	server,
 	pubsub
 }

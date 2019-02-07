@@ -6,6 +6,7 @@ import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
 import { withClientState } from 'apollo-link-state';
 
+// import { WebSocketLink } from 'apollo-link-ws';
 import { HttpLink } from 'apollo-link-http';
 
 import { InMemoryCache } from "apollo-cache-inmemory";
@@ -24,10 +25,9 @@ const isDev = process.env.NODE_ENV === 'development';
 const root = document.getElementById('root');
 
 const cache = new InMemoryCache().restore(window.__APOLLO_STATE__);
-const stateLink = withClientState({ resolvers, defaults, cache, typeDefs })
+const stateLink = withClientState({ resolvers, defaults, cache, typeDefs });
 
 const client = new ApolloClient({
-	
 	connectToDevTools: isDev,
 	cache,
 	link: ApolloLink.from([
@@ -41,6 +41,12 @@ const client = new ApolloClient({
 				);
 			if (networkError) console.log(`[Network error]: ${networkError}`);
 		}),
+		// new WebSocketLink({
+		// 	uri: 'ws://localhost:3000/subscriptions',
+		// 	options: {
+		// 		reconnect: true
+		// 	},
+		// }),
 		new HttpLink({
 			uri: 'http://localhost:3000/graphql',
 			// credentials: 'same-origin'

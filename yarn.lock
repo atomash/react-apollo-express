@@ -1484,6 +1484,13 @@ apollo-link-state@^0.4.2:
     apollo-utilities "^1.0.8"
     graphql-anywhere "^4.1.0-alpha.0"
 
+apollo-link-ws@^1.0.14:
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/apollo-link-ws/-/apollo-link-ws-1.0.14.tgz#588f898b7f953930a27e283941614d89907adf13"
+  integrity sha512-KwHVnhKKDUA5PmmzpiqkyahjBcwGdf2eFlTZg4DIwgH1R0KcBmn/A6rkZnmClBbUNgV6t+kR46dW2fyx64Jm3A==
+  dependencies:
+    apollo-link "^1.2.8"
+
 apollo-link@^1.0.0, apollo-link@^1.2.3, apollo-link@^1.2.8:
   version "1.2.8"
   resolved "https://registry.yarnpkg.com/apollo-link/-/apollo-link-1.2.8.tgz#0f252adefd5047ac1a9f35ba9439d216587dcd84"
