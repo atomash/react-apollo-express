@@ -1,6 +1,7 @@
+import http from "http";
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import { ApolloServer, mergeSchemas } from 'apollo-server-express';
+import { ApolloServer, mergeSchemas, PubSub } from 'apollo-server-express';
 // import { mergeSchemas } from "graphql-tools";
 import express from 'express';
 import schemas from './schema';
@@ -10,17 +11,20 @@ import render from './render';
 const app = express();
 
 const isDev = process.env.NODE_ENV === 'development';
-
+const pubsub = new PubSub();
 
 const schema = mergeSchemas({
 	schemas,
 	resolvers
 });
 
-  
 const Apollo = new ApolloServer({
 	playground: isDev,
-	schema
+	schema,
+	subscriptions: {
+		path: "/subscriptions",
+	},
+	tracing: true
 });
 
 app.use(express.json());
@@ -29,6 +33,7 @@ app.use(express.static('build/client/'));
 app.use(morgan('dev'));
 app.use(cookieParser());
 Apollo.applyMiddleware({ app, path: '/graphql' });
+Apollo.installSubscriptionHandlers(app)
 
 if (isDev) {
 	const proxy = require('http-proxy-middleware');
@@ -37,5 +42,12 @@ if (isDev) {
 
 app.use(render);
 
-export default app
- 
+const server = http.createServer(app);
+Apollo.installSubscriptionHandlers(server)
+
+
+export {
+	app,
+	server,
+	pubsub
+}

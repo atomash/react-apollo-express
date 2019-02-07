@@ -2,6 +2,9 @@ import { gql, addMockFunctionsToSchema, makeExecutableSchema } from 'apollo-serv
 
 const userSchema = makeExecutableSchema({
 	typeDefs: gql`
+		type Subscription {
+			userAdded: User
+		}
 		type Query {
 			allUsers: [User]
 		}

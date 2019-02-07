@@ -8,7 +8,7 @@ userController.getUsers = async () => {
 };
 
 userController.addUser = (root, args) => {
-	const user = new User({ name: args.name, surname: args.surname });
+	const user = new User({ name: args.name });
 	return user.save();
 };
 

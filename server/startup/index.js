@@ -1,42 +1,53 @@
-import http from "http";
 import './db_connector';
-import app from '../app'
+import { server, app } from '../app'
 
 const PORT = process.env.PORT || 3000;
 const isDev = process.env.NODE_ENV !== 'production';
 
-const server = http.createServer(app);
-let currentApp = app;
-server.listen(PORT, console.log(`App listening on port ${PORT}!`));
-
-server.on('error', error => {
-	if (error.syscall !== 'listen') {
-		throw error;
-	}
-
-	const bind = typeof PORT === 'string' ? `Pipe ${PORT}` : `Port ${PORT}`;
-
-	switch (error.code) {
-	case 'EACCES':
-		console.error(`${bind} requires elevated privileges`);
-		process.exit(1);
-		break;
-	case 'EADDRINUSE':
-		console.error(`${bind} is already in use`);
-		process.exit(1);
-		break;
-	default:
-		throw error;
-	}
-});
-
-if (isDev && module.hot) {
-	module.hot.accept(['../app.js'], () => {
-		server.removeListener("request", currentApp);
-		server.on("request", app);
-		currentApp = app;
+function startServer() {
+	return new Promise((resolve, reject) => {
+		const httpServer = server.listen(PORT);
+	
+		httpServer.once('error', (err: any) => {
+			if (err.code === 'EADDRINUSE') {
+				reject(err);
+			}
+		});
+	
+		httpServer.once('listening', () => resolve(httpServer));
+	}).then(httpServer => {
+		const { port } = httpServer.address();
+		console.info(`==> 🌎 Listening on ${port}.`);
+	
+		if (isDev && module.hot) {
+			let currentApp = app;
+			module.hot.accept('../app', () => {
+				httpServer.removeListener('request', currentApp);
+			import('../app')
+				.then(({ app: nextApp }) => {
+					currentApp = nextApp;
+					httpServer.on('request', currentApp);
+					console.log('HttpServer reloaded!');
+				})
+				.catch(err => console.error(err));
+			});
+			module.hot.accept(err => console.error(err));
+			module.hot.dispose(() => {
+				console.log('Disposing entry module...');
+				httpServer.close();
+			});
+		}
 	});
 }
+	
+console.log('Starting http server...');
+startServer().catch(err => {
+	console.error('Error in servev', err);
+})
+
+
+
+
 
 
 
