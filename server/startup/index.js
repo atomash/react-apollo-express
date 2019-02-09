@@ -8,7 +8,7 @@ function startServer(serv) {
 	return new Promise((resolve, reject) => {
 		const httpServer = serv.listen(PORT);
 	
-		httpServer.once('error', (err: any) => {
+		httpServer.once('error', (err) => {
 			if (err.code === 'EADDRINUSE') {
 				reject(err);
 			}
@@ -42,10 +42,3 @@ if (isDev && module.hot) {
 	});
 	module.hot.accept(err => console.error(err));
 }
-
-
-
-
-
-
-

@@ -8,19 +8,15 @@ import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { onError } from 'apollo-link-error';
 import { ApolloLink } from 'apollo-link';
-import { withClientState } from 'apollo-link-state';
 import AppRouter from '../src/app/App';
-import { defaults } from '../src/resolvers';
 
 import assets from '../build/client/asset-manifest.json';
 
 export default async (req, res) => {
 	const cache = new InMemoryCache();
-	const stateLink = withClientState({ defaults, cache })
 	const client = new ApolloClient({
 		ssrMode: true,
 		link: ApolloLink.from([
-			stateLink,
 			onError(({ graphQLErrors, networkError }) => {
 				if (graphQLErrors)
 					graphQLErrors.map(({ message, locations, path }) =>

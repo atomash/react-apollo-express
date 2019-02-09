@@ -23,6 +23,12 @@ const Apollo = new ApolloServer({
 	schema,
 	subscriptions: {
 		path: "/subscriptions",
+		onConnect: (connectionParams, webSocket, context) => {
+			console.log('connect')
+		  },
+		  onDisconnect: (webSocket, context) => {
+			console.log('disconnect')
+		  },
 	},
 	tracing: true
 });
@@ -33,11 +39,10 @@ app.use(express.static('build/client/'));
 app.use(morgan('dev'));
 app.use(cookieParser());
 Apollo.applyMiddleware({ app, path: '/graphql' });
-Apollo.installSubscriptionHandlers(app)
 
 if (isDev) {
 	const proxy = require('http-proxy-middleware');
-	app.use('/__webpack_hmr', proxy('ws://localhost:3001/', { changeOrigin: true }));
+	app.use('/__webpack_hmr', proxy('http://localhost:3001/', { changeOrigin: true }));
 }
 
 app.use(render);
