@@ -4,6 +4,7 @@ const userSchema = makeExecutableSchema({
 	typeDefs: gql`
 		type Subscription {
 			userAdded: User
+			userDeleted: User
 		}
 		type Query {
 			allUsers: [User]

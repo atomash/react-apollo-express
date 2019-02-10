@@ -10,8 +10,12 @@ import { HttpLink } from 'apollo-link-http';
 import { getMainDefinition } from 'apollo-utilities';
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { onError } from 'apollo-link-error';
-import { split } from 'apollo-link';
+import { from, split } from 'apollo-link';
+import { withClientState } from 'apollo-link-state';
 import './index.css';
+
+import { resolvers, defaults } from './resolvers';
+import typeDefs from './schemas';
 
 import App from './app/App';
 
@@ -21,6 +25,7 @@ const root = document.getElementById('root');
 
 
 const cache = new InMemoryCache().restore(window.__APOLLO_STATE__);
+const stateLink = withClientState({ resolvers, defaults, cache, typeDefs });
 
 const httpLink = new HttpLink({
 	uri: 'http://localhost:3000/graphql',
@@ -34,7 +39,7 @@ const wsLink = new WebSocketLink({
 	},
 })
 
-const link = split(
+const splitLink = split(
 	({ query }) => {
 	  const { kind, operation } = getMainDefinition(query);
 	  return kind === 'OperationDefinition' && operation === 'subscription';
@@ -55,7 +60,10 @@ const link = split(
 const client = new ApolloClient({
 	connectToDevTools: isDev,
 	cache,
-	link
+	link: from([
+		stateLink,
+		splitLink
+	  ])
 });
 
 const renderApp = Component => (

@@ -1,11 +1,30 @@
 import React from 'react'
-import { Query, Mutation  } from 'react-apollo';
+import { Query, compose, graphql  } from 'react-apollo';
 import gql from 'graphql-tag';
+
+import UsersList from '../components/UsersList';
+
+const USER_ADDED = gql`
+subscription userAdded {
+  userAdded {
+		_id
+	  name
+  }
+}
+`;
+
+const USER_DELETED = gql`
+subscription userDeleted {
+  userDeleted {
+		_id
+  }
+}
+`;
 
 const DELETE_USER = gql`
   mutation DeleteUser($id: String!) {
     deleteUser(id: $id) {
-			name
+		_id
 		}
   }
 `;
@@ -20,48 +39,41 @@ query {
 }
 `
 
-export default function HomePage() {
+function HomePage({deleteUser}) {
 	return (
 		<Query
 			query={GET_USERS}
 		>
-			{({ loading, error, data }) => {
+			{({ loading, error, data, subscribeToMore }) => {
 				if (loading) return <p>Loading...</p>;
 				if (error) return <p>Error :(</p>;
+				const subAdd = () => subscribeToMore({
+					document: USER_ADDED,
+					updateQuery: (prev, { subscriptionData }) => ({
+						...prev,
+						allUsers: [
+							...prev.allUsers, subscriptionData.data.userAdded
+						]
+						
+					})
+				});
+				const subDelete = () => subscribeToMore({
+					document: USER_DELETED,
+					updateQuery: (prev, { subscriptionData }) => ({
+						...prev,
+						allUsers: prev.allUsers.filter(foundUser => foundUser._id !== subscriptionData.data.userDeleted._id),
+					}),
+					  });
 				return (
 					<div>
 						<h1>From server: {data.hello}</h1>
-						<ul>
-							{
-								data.allUsers.length
-									? data.allUsers.map(user => (
-										<Mutation
-											mutation={DELETE_USER}
-											variables={{ id: user._id }}
-											update={(cache) => {
-												cache.writeQuery({
-													query: GET_USERS,
-													data: {
-														...data,
-														allUsers: data.allUsers.filter(foundUser => foundUser._id !== user._id),
-													},
-												});
-											}}
-											key={user._id}>
-											{deleteUser => (
-												<div>
-													<li>{user.name}</li>
-													<button
-														type='button'
-														onClick={deleteUser}
-													>delete</button>
-												</div>
-											)}
-										</Mutation>
-									))
-									: (<h3>Users not found</h3>)
-							}	
-						</ul>
+						<UsersList
+							subAdd={subAdd}
+							subDelete={subDelete}
+							deleteUser={deleteUser}
+							data={data.allUsers}
+
+						/>
 					</div>
 					
 				);
@@ -69,3 +81,8 @@ export default function HomePage() {
 		</Query>
 	)
 }
+
+
+export default compose(
+	graphql(DELETE_USER, { name: 'deleteUser' })
+)(HomePage)
